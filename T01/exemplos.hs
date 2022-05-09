@@ -1,6 +1,6 @@
 -- calculando o quadrado de um inteiro
 quadrado :: Int -> Int
-    quadrado n = n * n
+quadrado n = n * n
 
 -- soma de dois números de ponto flutuante
 soma :: Float -> Float -> Float
