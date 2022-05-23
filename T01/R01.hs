@@ -21,4 +21,7 @@ par :: Int -> Bool
 par x = mod x 2 == 0
 
 multiplo :: Int -> Int -> Bool
-multiplo i j = j * x == i -- perguntar prof como faz for !!
+multiplo i j = j * x == i
+
+dupli :: [Int] -> Int 
+dupli 
