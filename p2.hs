@@ -31,24 +31,48 @@ switch :: Database -> Int -> IO Database
 switch db op = do
     if op == 1 then --insere novo filme 
         do
-            filme <- dados
+            filme <- dados 
             return (inserir db filme)
-        -- else if op == 2 then -- remover filme por titulo
-        --     do
-        --     else if op == 3 then  -- remover filme por diretor
-        --         do 
-        --         else if op == 4 then  -- Buscar Filme por Título
-        --             do 
-        --             else if op == 5 then  -- Buscar Filme por Diretor
-        --                 do 
-        --                 else if op == 6 then  -- Buscar Filme por Ano
-        --                     do 
-        --                     else if op == 7 then  -- Exibir Todos os Filmes
-        --                         do 
-        --                         else --sair
-        --                             do
-        --                                 putStrLn "\nsaindo..."
-        --                                 return db
+        else if op == 2 then -- remover filme por titulo
+            do
+                putStrLn "digite o titulo: "
+                titulo <- getLine
+                return (removerTitulo db titulo)
+            else if op == 3 then  -- remover filme por diretor
+                do 
+                    putStrLn "digite o diretor: "
+                    diretor <- getLine
+                    return (removerDiretor db diretor)
+                else if op == 4 then  -- Buscar Filme por Título
+                    do 
+                        putStrLn "digite o titulo: "
+                        titulo <- getLine
+                        putStrLn "\n--------FILME--------"
+                        imprime(buscaTitulo db titulo)
+                        return db
+                    else if op == 5 then  -- Buscar Filme por Diretor
+                        do 
+                            putStrLn "digite o diretor: "
+                            diretor <- getLine
+                            putStrLn "\n--------FILME--------"
+                            imprime(buscaDiretor db diretor)
+                            return db
+                        else if op == 6 then  -- Buscar Filme por Ano
+                            do 
+                                putStrLn "digite o lancamento: "
+                                lancamento <- readLn
+                                putStrLn "\n--------FILME--------"
+                                imprime(buscaAno db lancamento)
+                                return db
+                            else if op == 7 then  -- Exibir Todos os Filmes
+                                do 
+                                    putStrLn "\n--------FILMES--------"
+                                    imprime db
+                                    return db
+                                else --sair
+                                    do
+                                        putStrLn "\nsaindo..."
+                                        return db
 
 --coleta de dados do filme 
 dados :: IO Filme
@@ -65,14 +89,51 @@ dados = do
 
 
 -- funcoes dos menus
+imprime:: Database -> IO ()
+imprime [] = do putStrLn ""
+imprime ((a,b,c,d):t) = do 
+        putStrLn ("\ntitulo: " ++ a )
+        putStrLn ("Diretor: " ++ b )
+        putStrLn ("nota: " ++ show(c) )
+        putStrLn ("lancamento: " ++ show(d) )
+        imprime t 
+
 inserir :: Database -> Filme -> Database
-inserir [] filme = [filme]
-inserir db filme = db ++ [filme]
+inserir [] filme = [filme] 
+inserir db filme = ordena db filme
 
--- remover :: Database -> Filme -> Database
--- remover [] _ = []
--- remover (h,_,_,_:t) filme = if h == filme then remover t cl else h : remover t cl
+ordena :: Database -> Filme -> Database
+ordena [] filme = [filme] 
+ordena ((a,b,c,d):t) (w,x,y,z) = 
+    if z < d then (w,x,y,z) : ordena t (a,b,c,d)
+    else (a,b,c,d) : ordena t (w,x,y,z)  
 
+removerTitulo :: Database -> Titulo -> Database
+removerTitulo [] _ = []
+removerTitulo ((h,a,b,c):t) titulo = if h == titulo 
+    then removerTitulo t titulo
+    else  (h,a,b,c) : removerTitulo t titulo
 
+removerDiretor :: Database -> Diretor -> Database
+removerDiretor [] _ = []
+removerDiretor ((a,h,b,c):t) diretor = if h == diretor 
+    then removerDiretor t diretor
+    else  (a,h,b,c) : removerDiretor t diretor
 
+buscaTitulo:: Database -> Titulo -> Database
+buscaTitulo [] _ = []
+buscaTitulo ((h,a,b,c):t) titulo = if h == titulo 
+    then (h,a,b,c) : buscaTitulo t titulo 
+    else buscaTitulo t titulo  
 
+buscaDiretor:: Database -> Diretor -> Database
+buscaDiretor [] _ = []
+buscaDiretor ((a,h,b,c):t) diretor = if h == diretor 
+    then (a,h,b,c) : buscaTitulo t diretor 
+    else buscaDiretor t diretor  
+
+buscaAno:: Database -> Lancamento -> Database
+buscaAno [] _ = []
+buscaAno ((a,b,c,h):t) ano = if h == ano 
+    then (a,b,c,h) : buscaAno t ano 
+    else buscaAno t ano  
